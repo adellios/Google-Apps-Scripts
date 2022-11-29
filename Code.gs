@@ -8,6 +8,29 @@ function onOpen() {
 }
 
 
+function makeCopy() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet(); //Selects current sheet
+  const ui = SpreadsheetApp.getUi(); //Creates menu
+  var response = ui.prompt('Archive Week?', 'Tab name:', ui.ButtonSet.YES_NO); //Menu contents
+
+  if (response.getSelectedButton() == ui.Button.YES) {
+    if (ss.getSheetByName(response.getResponseText()) == null){ //Checsk if tab is in sheet
+      Browser.msgBox('Tab not found.');
+      } else {
+        var formattedDate = Utilities.formatDate(new Date(), "GMT", "(MM-dd-yyyy)"); //Current date
+        var saveAs = response.getResponseText() + ' ' + formattedDate; //archive file name
+        var destinationFolder = DriveApp.getFolderById("10UTNNmU0AmO5JjQnY_zZ8i3MTiOR7uqW"); //Destination folder
+        DriveApp.getFileById(SpreadsheetApp.getActiveSpreadsheet().getId()).makeCopy(saveAs, destinationFolder); //Makes copy at destination
+
+        ss.setActiveSheet(ss.getSheetByName(response.getResponseText())); //Grabs tab to be deleted
+        ss.deleteActiveSheet(); //Deletes tab in original sheet
+    
+        Browser.msgBox(response.getResponseText() + ' was archived.');
+      }
+  } else if (response.getSelectedButton() == ui.Button.NO){
+    Browser.msgBox('Tab was not archived.');
+  }
+}
 
 
  
@@ -42,32 +65,4 @@ function saveData() {
   //Browser.msgBox(pasteSheet.getLastRow());
  // source.clearContent();
   //pasteSheet.getLastRow()
-}
-
-
-
-
-function makeCopy() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var tabName = "";
-  const ui = SpreadsheetApp.getUi();
-  var response = ui.prompt('Archive Week?', 'Tab name:', ui.ButtonSet.YES_NO);
-
-  if (response.getSelectedButton() == ui.Button.YES) {
-    if (ss.getSheetByName(response.getResponseText()) == null){
-      Browser.msgBox('Tab not found.');
-      } else {
-        var formattedDate = Utilities.formatDate(new Date(), "GMT", "(MM-dd-yyyy)");
-        var saveAs = response.getResponseText() + ' ' + formattedDate;
-        var destinationFolder = DriveApp.getFolderById("10UTNNmU0AmO5JjQnY_zZ8i3MTiOR7uqW");
-        DriveApp.getFileById(SpreadsheetApp.getActiveSpreadsheet().getId()).makeCopy(saveAs, destinationFolder);
-
-        ss.setActiveSheet(ss.getSheetByName(response.getResponseText()));//Grabs tab to be deleted
-        ss.deleteActiveSheet();
-    
-        Browser.msgBox(response.getResponseText() + ' was archived.');
-      }
-  } else if (response.getSelectedButton() == ui.Button.NO){
-    Browser.msgBox('Tab was not archived.');
-  }
 }
