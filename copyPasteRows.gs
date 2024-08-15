@@ -39,11 +39,10 @@ function myFunction() {
   }
 
   var target_range = sheet2.getRange('C' + lastRow2 + ':C' + variable1);
-  var today = Utilities.formatDate(new Date(), "GMT+1", "MM/dd/yyyy")
   twod_array = [];
 
   for (i=0; i<numLines; i++){
-    twod_array.push([today]);
+    twod_array.push([Utilities.formatDate(new Date(), "GMT+1", "MM/dd/yyyy")]);
   }
   target_range.setValues(twod_array);
 
